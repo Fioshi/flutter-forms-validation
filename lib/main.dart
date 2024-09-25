@@ -36,7 +36,8 @@ class MyCustomForm extends StatefulWidget {
 class MyCustomFormState extends State<MyCustomForm> {
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
-  final formKey = GlobalKey();
+  final formKey = GlobalKey<FormState>();
+  bool obscured = true;
 
   var email = "";
   @override
@@ -49,7 +50,7 @@ class MyCustomFormState extends State<MyCustomForm> {
     return Form(
       key: formKey,
       child: ListView(
-        padding: const EdgeInsets.all(32),
+        padding: EdgeInsets.all(32),
         children: <Widget>[
           buildEmail(),
           const SizedBox(
@@ -60,9 +61,8 @@ class MyCustomFormState extends State<MyCustomForm> {
             height: 24,
           ),
           ElevatedButton(
-            
             onPressed: () {
-             if()
+              bool valid = formKey.currentState!.validate();
             },
             child: const Text('Submit'),
           )
@@ -98,11 +98,23 @@ class MyCustomFormState extends State<MyCustomForm> {
       );
 
   Widget buildPassword() => TextFormField(
+        validator: (value) {
+          if (value == null || value.length <= 6) {
+            return "Campo invalido";
+          }
+          return null;
+        },
         controller: passwordController,
-        obscureText: true,
+        obscureText: obscured,
         decoration: InputDecoration(
           hintText: 'Your Password...',
           labelText: 'Password',
+          suffixIcon: IconButton(
+            icon: Icon(Icons.visibility),
+            onPressed: () {
+              obscured = !obscured;
+            },
+          ),
           border: OutlineInputBorder(),
         ),
       );
